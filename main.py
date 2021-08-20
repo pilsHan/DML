@@ -15,7 +15,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 parser = argparse.ArgumentParser(description='DML : CIFAR10, CIFAR100')
 parser.add_argument('--EPOCHS', default=200, type=int)
 parser.add_argument('--BATCH_SIZE', default=64, type=int)
-parser.add_argument('--num_workers', default=2, type=int)
+parser.add_argument('--num_workers', default=0, type=int)
 parser.add_argument('--expansion', default=1, type=int)
 
 parser.add_argument('--lr', default=0.1, type=int)
@@ -92,8 +92,6 @@ def train_epoch(model, train_loader, optimizers):
             optimizers[i].zero_grad()
             losses[i].backward()
             optimizers[i].step()
-
-
 ##evaluate
 def evaluate(model, test_loader):
     for i in range(num_net):
@@ -101,12 +99,11 @@ def evaluate(model, test_loader):
     test_loss = [0]*num_net
     pred = [0]*num_net
     correct = [0]*num_net
-    losses = []
+    losses = [0]*num_net
     test_accuracy=[0]*num_net
     KLD_loss = []
     CE_loss = []
     with torch.no_grad():
-
         for image, label in test_loader:
             image,label = image.to(DEVICE),label.to(DEVICE)
             output=[]
@@ -120,22 +117,21 @@ def evaluate(model, test_loader):
                         KLD_loss[k] += criterion_KLD(F.log_softmax(output[l], dim=1),
                                                      F.softmax(output[k], dim=1)).item()
                 loss = CE_loss[k] + KLD_loss[k] / (num_net - 1)
-                losses.append(loss)
+                losses[k]=loss
             for i in range(num_net):
-                test_loss[i]=losses[i].item()
+                test_loss[i]=losses[i]
                 pred[i] = output[i].max(1, keepdim = True)[1]
                 correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
     for i in range(num_net):
         test_loss[i] /= len(test_loader.dataset)
         test_accuracy[i] = 100.*correct[i]/len(test_loader.dataset)
+    print('def : ',test_loss)
     return test_loss,test_accuracy
 ##
-def train():
-    for epoch in range(1,args.EPOCHS+1):
-        for i in range(num_net):
-            schedulers[i].step()
-        train_epoch(models,train_loader,optimizers)
-        test_loss, test_accuracy = evaluate(models,test_loader)
-        print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
-##
-if __name__=='__main__' :train()
+for epoch in range(1,args.EPOCHS+1):
+    for i in range(num_net):
+        schedulers[i].step()
+    train_epoch(models,train_loader,optimizers)
+    test_loss, test_accuracy = evaluate(models,test_loader)
+    print('epoch : ',test_loss)
+    print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
