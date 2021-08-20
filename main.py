@@ -78,7 +78,6 @@ def train_epoch(model, train_loader, optimizers):
         losses=[]
         KLD_loss=[]
         CE_loss=[]
-        loss=0
         for i in range(num_net):
             output.append(model[i](image))
         for k in range(num_net):
@@ -102,25 +101,28 @@ def evaluate(model, test_loader):
     test_loss = [0]*num_net
     pred = [0]*num_net
     correct = [0]*num_net
-    loss=[]
+    losses = []
     test_accuracy=[0]*num_net
-    loss_k=0
+    KLD_loss = []
+    CE_loss = []
     with torch.no_grad():
+
         for image, label in test_loader:
             image,label = image.to(DEVICE),label.to(DEVICE)
             output=[]
             for i in range(num_net):
-                output.append(models[i](image))
+                output.append(model[i](image))
             for k in range(num_net):
-                CE_loss = criterion_CE(output[k], label)
-                KLD_loss = 0
+                CE_loss.append(criterion_CE(output[k], label))
+                KLD_loss.append(0)
                 for l in range(num_net):
                     if not l == k:
-                        KLD_loss += criterion_KLD(F.softmax(output[l]), F.softmax(output[k]))
-                loss_k += CE_loss + KLD_loss / (num_net - 1)
-                loss.append(loss_k)
+                        KLD_loss[k] += criterion_KLD(F.log_softmax(output[l], dim=1),
+                                                     F.softmax(output[k], dim=1)).item()
+                loss = CE_loss[k] + KLD_loss[k] / (num_net - 1)
+                losses.append(loss)
             for i in range(num_net):
-                test_loss[i]=loss[i].item()
+                test_loss[i]=losses[i].item()
                 pred[i] = output[i].max(1, keepdim = True)[1]
                 correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
     for i in range(num_net):
