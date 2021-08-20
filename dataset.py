@@ -32,6 +32,8 @@ def dataloader(args):
         num_classes = 10
     elif args.dataset == 'CIFAR100':
         transform = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomCrop(32,padding=4),
             transforms.ToTensor(),
             transforms.Normalize(cifar100_mean, cifar100_std)
         ])
