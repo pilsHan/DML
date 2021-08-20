@@ -125,7 +125,7 @@ def evaluate(model, test_loader):
                 correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
     for i in range(num_net):
         test_loss[i] /= len(test_loader.dataset)
-        test_accuracy[i] = 100.*correct/len(test_loader.dataset)
+        test_accuracy[i] = 100.*correct[i]/len(test_loader.dataset)
     return test_loss,test_accuracy
 ##
 def train():
