@@ -122,7 +122,7 @@ def evaluate(model, test_loader):
             for i in range(num_net):
                 test_loss[i]=loss[i].item()
                 pred[i] = output[i].max(1, keepdim = True)[1]
-                correct[i] += pred[i].eq(label.view_as(pred)).sum().item()
+                correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
     for i in range(num_net):
         test_loss[i] /= len(test_loader.dataset)
         test_accuracy[i] = 100.*correct/len(test_loader.dataset)
