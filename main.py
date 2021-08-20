@@ -33,6 +33,7 @@ parser.add_argument('--net3', default='None' , choices=['Resnet_32','MobileNet',
 parser.add_argument('--net4', default='None', choices=['Resnet_32','MobileNet', 'InceptionV1','WRN_28_10'], type=str)
 parser.add_argument('--data_path', default='./data', type=str)
 parser.add_argument('--download', default=True, type=bool)
+parser.add_argument('--use_weight_init', default=True, type=bool)
 
 args = parser.parse_args()
 ## dataload
@@ -48,13 +49,13 @@ optimizers=[]
 schedulers=[]
 for i in range(num_net):
     if net[i] == 'Resnet_32':
-        models.append(model.ResNet(num_classes).to(DEVICE))
+        models.append(model.ResNet(num_classes,args.use_weight_init).to(DEVICE))
     elif net[i] == 'MobileNet':
         models.append(model.MobileNet.to(DEVICE))
     elif net[i] == 'InceptionV1':
         models.append(model.InceptionV1.to(DEVICE))
     elif net[i] == 'WRN_28_10' :
-        models.append(model.WRN_28_10.to(DEVICE))
+        models.append(model.WRN_28_10(num_classes,args.use_weight_init).to(DEVICE))
 
 ## optimizer
 for i in range(num_net):
@@ -119,7 +120,7 @@ def evaluate(model, test_loader):
                 loss = CE_loss[k] + KLD_loss[k] / (num_net - 1)
                 losses[k]=loss
             for i in range(num_net):
-                test_loss[i]=losses[i]
+                test_loss[i]+=losses[i]
                 pred[i] = output[i].max(1, keepdim = True)[1]
                 correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
     for i in range(num_net):
