@@ -22,11 +22,6 @@ class BasicBlock(nn.Module):
         out = F.relu(out)
         return out
 
-
-def weights_init(m):
-    if isinstance(m, nn.Linear) or isinstance(m, nn.Conv2d):
-        torch.nn.init.kaiming_normal_(m.weight)
-
 class ResNet(nn.Module):
     def __init__(self,num_classes=100):
         super(ResNet,self).__init__()
@@ -38,7 +33,7 @@ class ResNet(nn.Module):
         self.layer2 = self.make_layer(32, 5, stride=2)
         self.layer3 = self.make_layer(64, 5, stride=2)
         self.linear = nn.Linear(64, num_classes)
-        self.apply(weights_init)
+
     def make_layer(self, planes, num_block, stride):
         strides = [stride] +[1]*(num_block-1)
         layers=[]
