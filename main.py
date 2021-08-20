@@ -1,5 +1,6 @@
 ## module
 import argparse
+from tqdm import tqdm
 
 import torch
 import torch.nn as nn
@@ -68,27 +69,29 @@ for i in range(num_net):
 criterion_CE = nn.CrossEntropyLoss()
 criterion_KLD = nn.KLDivLoss(reduction='batchmean')
 ## train
-def train(model, train_loader, optimizers):
+def train_epoch(model, train_loader, optimizers):
     for i in range(num_net):
         model[i].train()
-    for batch_idx, (image, label) in enumerate(train_loader):
+    for batch_idx, (image, label) in enumerate(tqdm(train_loader)):
         image, label = image.to(DEVICE), label.to(DEVICE)
         output=[]
         losses=[]
+        KLD_loss=[]
+        CE_loss=[]
         loss=0
         for i in range(num_net):
             output.append(model[i](image))
         for k in range(num_net):
-            CE_loss = criterion_CE(output[k],label)
-            KLD_loss = 0
+            CE_loss.append(criterion_CE(output[k],label))
+            KLD_loss.append(0)
             for l in range(num_net):
                 if not l==k:
-                    KLD_loss+=criterion_KLD(F.log_softmax(output[l],dim=1),F.softmax(output[k],dim=1))
-            loss = CE_loss+KLD_loss/(num_net-1)
+                    KLD_loss[k]+=criterion_KLD(F.log_softmax(output[l],dim=1),F.softmax(output[k],dim=1)).item()
+            loss = CE_loss[k]+KLD_loss[k]/(num_net-1)
             losses.append(loss)
         for i in range(num_net):
             optimizers[i].zero_grad()
-            losses[i].backward(retain_graph=True)
+            losses[i].backward()
             optimizers[i].step()
 
 
@@ -118,16 +121,19 @@ def evaluate(model, test_loader):
                 loss.append(loss_k)
             for i in range(num_net):
                 test_loss[i]=loss[i].item()
-                pred[i] = output.max(1, keepdim = True)[1]
-                correct[i] += pred.eq(label.view_as(pred)).sum().item()
+                pred[i] = output[i].max(1, keepdim = True)[1]
+                correct[i] += pred[i].eq(label.view_as(pred)).sum().item()
     for i in range(num_net):
         test_loss[i] /= len(test_loader.dataset)
         test_accuracy[i] = 100.*correct/len(test_loader.dataset)
     return test_loss,test_accuracy
 ##
-for epoch in range(1,args.EPOCHS+1):
-    for i in range(num_net):
-        schedulers[i].step()
-    train(models,train_loader,optimizers)
-    test_loss, test_accuracy = evaluate(models,test_loader)
-    print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
+def train():
+    for epoch in range(1,args.EPOCHS+1):
+        for i in range(num_net):
+            schedulers[i].step()
+        train_epoch(models,train_loader,optimizers)
+        test_loss, test_accuracy = evaluate(models,test_loader)
+        print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
+##
+if __name__=='__main__' :train()
