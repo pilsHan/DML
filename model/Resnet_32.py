@@ -23,9 +23,10 @@ class BasicBlock(nn.Module):
         return out
 
 class ResNet(nn.Module):
-    def __init__(self,num_classes=100):
+    def __init__(self,num_classes=100,use_weight_init=True):
         super(ResNet,self).__init__()
         self.num_classes=num_classes
+        self.use_weight_init=use_weight_init
         self.in_planes = 16
         self.conv1 = nn.Conv2d(3,16,kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(16)
@@ -33,6 +34,12 @@ class ResNet(nn.Module):
         self.layer2 = self.make_layer(32, 5, stride=2)
         self.layer3 = self.make_layer(64, 5, stride=2)
         self.linear = nn.Linear(64, num_classes)
+        if self.use_weight_init:
+            self.weight_init()
+
+    def weight_init(self):
+        if isinstance(self, nn.Linear) or isinstance(self, nn.Conv2d):
+            nn.init.kaiming_normal_(self.weight)
 
     def make_layer(self, planes, num_block, stride):
         strides = [stride] +[1]*(num_block-1)
