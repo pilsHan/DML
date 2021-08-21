@@ -8,6 +8,18 @@ still unfinished and in progress
 - implement other model not only Resnet but also MobileNet, InceptionV1, 28_10_WRN
 - experimental environment setting and comparison of paper results
 
+###Experimental setting
+- CIFAR 100
+  - epochs : 200
+  - batch size : 64
+  - optimizer : 
+    - SGD with Nesterov momentum
+    - initial learning rate = 0.1
+    - momentum = 0.9
+    - The learning rate dropped by 0.1 every 60 epochs (step=60, gamma=0.1)
+  - augmentation
+    -  horizontal flips
+    -  random crops : padding=4
 ### Result
 |Network Types|Network Types|Independent|Independent|DML|DML|
 |----|----|----|----|----|----|
