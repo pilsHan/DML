@@ -12,7 +12,9 @@ still unfinished and in progress
 |Network Types|Network Types|Independent|Independent|DML|DML|
 |----|----|----|----|----|----|
 |Net1|Net2|Net1|Net2|Net1|Net2|
-|Resnet-32|Resnet-32|69.89|69.89|Net1|Net2|
+|Resnet-32|Resnet-32|69.89|69.89|69.95|70.11|
+
+It is thought that the accuracy is within the error range, and it seems that the implementation is not done properly yet.
 
 ### Usage
 1. clone repository `git clone 'https://github.com/pilsHan/DML_for-personal-study.git'`
