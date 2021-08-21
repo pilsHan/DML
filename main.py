@@ -15,7 +15,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 parser = argparse.ArgumentParser(description='DML : CIFAR10, CIFAR100')
 parser.add_argument('--EPOCHS', default=200, type=int)
 parser.add_argument('--BATCH_SIZE', default=64, type=int)
-parser.add_argument('--num_workers', default=0, type=int)
+parser.add_argument('--num_workers', default=2, type=int)
 parser.add_argument('--expansion', default=1, type=int)
 
 parser.add_argument('--lr', default=0.1, type=int)
@@ -24,7 +24,7 @@ parser.add_argument('--decay', default=0.0005, type=int)
 parser.add_argument('--optim', default='SGD', choices=['Adam', 'RMSprop'], type=str)
 parser.add_argument('--nesterov',default=True, type=bool)
 parser.add_argument('--step', default=60, type=int)
-parser.add_argument('--gamma', default=0.9, type=int)
+parser.add_argument('--gamma', default=0.1, type=int)
 
 parser.add_argument('--dataset', default='CIFAR100', choices=['CIFAR10','CIFAR100'], type=str)
 parser.add_argument('--net1', default='Resnet_32', choices=['MobileNet', 'InceptionV1','WRN_28_10'], type=str)
@@ -33,7 +33,6 @@ parser.add_argument('--net3', default='None' , choices=['Resnet_32','MobileNet',
 parser.add_argument('--net4', default='None', choices=['Resnet_32','MobileNet', 'InceptionV1','WRN_28_10'], type=str)
 parser.add_argument('--data_path', default='./data', type=str)
 parser.add_argument('--download', default=True, type=bool)
-parser.add_argument('--use_weight_init', default=True, type=bool)
 
 args = parser.parse_args()
 ## dataload
@@ -49,13 +48,13 @@ optimizers=[]
 schedulers=[]
 for i in range(num_net):
     if net[i] == 'Resnet_32':
-        models.append(model.ResNet(num_classes,args.use_weight_init).to(DEVICE))
+        models.append(model.ResNet(num_classes).to(DEVICE))
     elif net[i] == 'MobileNet':
         models.append(model.MobileNet.to(DEVICE))
     elif net[i] == 'InceptionV1':
         models.append(model.InceptionV1.to(DEVICE))
     elif net[i] == 'WRN_28_10' :
-        models.append(model.WRN_28_10(num_classes,args.use_weight_init).to(DEVICE))
+        models.append(model.WRN_28_10.to(DEVICE))
 
 ## optimizer
 for i in range(num_net):
@@ -93,6 +92,8 @@ def train_epoch(model, train_loader, optimizers):
             optimizers[i].zero_grad()
             losses[i].backward()
             optimizers[i].step()
+
+
 ##evaluate
 def evaluate(model, test_loader):
     for i in range(num_net):
@@ -100,7 +101,7 @@ def evaluate(model, test_loader):
     test_loss = [0]*num_net
     pred = [0]*num_net
     correct = [0]*num_net
-    losses = [0]*num_net
+    losses = []
     test_accuracy=[0]*num_net
     KLD_loss = []
     CE_loss = []
@@ -118,21 +119,22 @@ def evaluate(model, test_loader):
                         KLD_loss[k] += criterion_KLD(F.log_softmax(output[l], dim=1),
                                                      F.softmax(output[k], dim=1)).item()
                 loss = CE_loss[k] + KLD_loss[k] / (num_net - 1)
-                losses[k]=loss
+                losses.append(loss)
             for i in range(num_net):
-                test_loss[i]+=losses[i]
+                test_loss[i]=losses[i].item()
                 pred[i] = output[i].max(1, keepdim = True)[1]
                 correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
     for i in range(num_net):
-        test_loss[i] /= len(test_loader.dataset)
+        #test_loss[i] /= len(test_loader.dataset)
         test_accuracy[i] = 100.*correct[i]/len(test_loader.dataset)
-    print('def : ',test_loss)
     return test_loss,test_accuracy
 ##
-for epoch in range(1,args.EPOCHS+1):
-    for i in range(num_net):
-        schedulers[i].step()
-    train_epoch(models,train_loader,optimizers)
-    test_loss, test_accuracy = evaluate(models,test_loader)
-    print('epoch : ',test_loss)
-    print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
+def train():
+    for epoch in range(1,args.EPOCHS+1):
+        for i in range(num_net):
+            schedulers[i].step()
+        train_epoch(models,train_loader,optimizers)
+        test_loss, test_accuracy = evaluate(models,test_loader)
+        print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
+##
+if __name__=='__main__' :train()
