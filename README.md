@@ -34,5 +34,5 @@ It is thought that the accuracy is within the error range, and it seems that the
 3. run main.py `python main.py --num_workers 2`
 
 ### Reference  
-https://github.com/chxy95/Deep-Mutual-Learning
+https://github.com/chxy95/Deep-Mutual-Learning  
 https://github.com/meliketoy/wide-resnet.pytorch
