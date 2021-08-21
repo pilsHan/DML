@@ -8,6 +8,12 @@ still unfinished and in progress
 - implement other model not only Resnet but also MobileNet, InceptionV1, 28_10_WRN
 - experimental environment setting and comparison of paper results
 
+### Result
+|Network Types|Network Types|Independent|Independent|DML|DML|
+|----|----|----|----|----|----|
+|Net1|Net2|Net1|Net2|Net1|Net2|
+|Resnet-32|Resnet-32|69.89|69.89|Net1|Net2|
+
 ### Usage
 1. clone repository `git clone 'https://github.com/pilsHan/DML_for-personal-study.git'`
 2. requirements : pytorch and torchvision (can be run with colab)
