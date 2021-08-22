@@ -27,6 +27,7 @@ still unfinished and in progress
 |Resnet-32|Resnet-32|69.89|69.89|69.95|70.11|0.06|0.22|
 |Resnet-32|WRN_28_10|69.89|NaN|70.25|79.47|0.36|NaN|
 
+##### Top-1 accuracy (%) no the CIFAR-100 dataset
 
 
 ### Usage
