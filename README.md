@@ -22,7 +22,7 @@ This repository is the unofficial implementation of
       -  horizontal flips
       -  random crops : padding=4
 ### Result
-|Network Types|Network Types|Independent|Independent|DML|DML|DML-Ind.|DML-Ind.|
+|Network Types|Network Types|Ind.|Ind.|DML|DML|DML-Ind.|DML-Ind.|
 |:-----:|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |Net1|Net2|Net1|Net2|Net1|Net2|Net1|Net2|
 |Resnet-32|Resnet-32|69.89|69.89|69.95|70.11|0.06|0.22|
