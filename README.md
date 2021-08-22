@@ -37,5 +37,5 @@ still unfinished and in progress
 
 ### Reference  
 https://github.com/chxy95/Deep-Mutual-Learning  
-https://github.com/meliketoy/wide-resnet.pytorch
+https://github.com/meliketoy/wide-resnet.pytorch    
 [Deep Mutual Learning](https://arxiv.org/pdf/1706.00384.pdf)
