@@ -27,9 +27,6 @@ This repository is the unofficial implementation of :
 |Net1|Net2|Net1|Net2|Net1|Net2|Net1|Net2|
 |Resnet-32|Resnet-32|-|-|71.25|71.24|-|-|
 
-~~|Resnet-32|Resnet-32|69.89|69.89|70.42|70.68|0.53|0.79|
-~~|Resnet-32|WRN_28_10|69.89|79.05|70.27|79.57|0.38|0.52|
-
 ##### Top-1 accuracy (%) on the CIFAR-100 dataset
 
 *It seems that this implementation doesn't properly yet*
