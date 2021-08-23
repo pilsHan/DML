@@ -18,7 +18,7 @@ def trainsform(mean,std):
 
     return transform_train,transform_test
 
-##dateset
+##dateloader
 def dataloader(args):
     if not os.path.exists(args.data_path):
         os.mkdir(args.data_path)
