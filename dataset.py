@@ -7,7 +7,7 @@ from torchvision import datasets, transforms
 def trainsform(mean,std):
     transform_train = transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(32,padding=4),
+            transforms.RandomCrop(32,padding=4,padding_mode='reflect'),
             transforms.ToTensor(),
             transforms.Normalize(mean,std)
         ])
