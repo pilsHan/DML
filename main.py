@@ -18,13 +18,13 @@ parser.add_argument('--BATCH_SIZE', default=64, type=int)
 parser.add_argument('--num_workers', default=2, type=int)
 parser.add_argument('--expansion', default=1, type=int)
 
-parser.add_argument('--lr', default=0.1, type=int)
-parser.add_argument('--momentum', default=0.9, type=int)
-parser.add_argument('--decay', default=0.0005, type=int)
+parser.add_argument('--lr', default=0.1, type=float)
+parser.add_argument('--momentum', default=0.9, type=float)
+parser.add_argument('--decay', default=0.0005, type=float)
 parser.add_argument('--optim', default='SGD', choices=['Adam', 'RMSprop'], type=str)
 parser.add_argument('--nesterov',default=True, type=bool)
 parser.add_argument('--step', default=60, type=int)
-parser.add_argument('--gamma', default=0.1, type=int)
+parser.add_argument('--gamma', default=0.1, type=float)
 
 parser.add_argument('--dataset', default='CIFAR100', choices=['CIFAR10','CIFAR100'], type=str)
 parser.add_argument('--net1', default='Resnet_32', choices=['MobileNet', 'InceptionV1','WRN_28_10'], type=str)
@@ -134,12 +134,10 @@ def evaluate(model, test_loader):
         test_accuracy[i] = 100.*correct[i]/len(test_loader.dataset)
     return test_loss,test_accuracy
 ## train
-def train():
-    for epoch in range(1,args.EPOCHS+1):
-        for i in range(num_net):
-            schedulers[i].step()
-        train_epoch(models,train_loader,optimizers)
-        test_loss, test_accuracy = evaluate(models,test_loader)
-        print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
-##
-if __name__=='__main__' :train()
+for epoch in range(1,args.EPOCHS+1):
+    for i in range(num_net):
+        schedulers[i].step()
+    train_epoch(models,train_loader,optimizers)
+    test_loss, test_accuracy = evaluate(models,test_loader)
+    print('[EPOCH : {}] net1 Loss: {:.4f}, net1 Accuracy: {:.2f}% \n\t net2 Loss: {:.4f}, net2 Accuracy: {:.2f}% '.format(epoch, test_loss[0], test_accuracy[0], test_loss[1],test_accuracy[1]))
+    
