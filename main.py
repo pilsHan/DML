@@ -90,7 +90,8 @@ def train_epoch(model, train_loader, optimizers):
             KLD_loss.append(0)
             for l in range(num_net):
                 if not l==k:
-                    KLD_loss[k]+=criterion_KLD(F.log_softmax(output[l],dim=1),F.softmax(output[k],dim=1)).item()
+                    KLD_loss[k]+=criterion_KLD(F.log_softmax(output[k],dim=1),
+                                               F.softmax(output[l],dim=1)).item()
             loss = CE_loss[k]+KLD_loss[k]/(num_net-1)
             losses.append(loss)
         for i in range(num_net):
@@ -120,8 +121,8 @@ def evaluate(model, test_loader):
                 KLD_loss.append(0)
                 for l in range(num_net):
                     if not l == k:
-                        KLD_loss[k] += criterion_KLD(F.log_softmax(output[l], dim=1),
-                                                     F.softmax(output[k], dim=1)).item()
+                        KLD_loss[k] += criterion_KLD(F.log_softmax(output[k], dim=1),
+                                                     F.softmax(output[l], dim=1)).item()
                 loss = CE_loss[k] + KLD_loss[k] / (num_net - 1)
                 losses.append(loss)
             for i in range(num_net):
