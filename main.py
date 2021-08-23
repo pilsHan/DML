@@ -1,6 +1,5 @@
-## module
+## import
 import argparse
-from tqdm import tqdm
 
 import torch
 import torch.nn as nn
@@ -9,6 +8,7 @@ import torch.optim as optim
 
 from dataset import *
 import model
+
 ## parser
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -33,10 +33,13 @@ parser.add_argument('--net3', default='None' , choices=['Resnet_32','MobileNet',
 parser.add_argument('--net4', default='None', choices=['Resnet_32','MobileNet', 'InceptionV1','WRN_28_10'], type=str)
 parser.add_argument('--data_path', default='./data', type=str)
 parser.add_argument('--download', default=True, type=bool)
+parser.add_argument('--use_weight_init', default=True, type=bool)
 
 args = parser.parse_args()
+
 ## dataload
 train_loader,test_loader, num_classes = dataloader(args)
+
 ## model
 net=[args.net1, args.net2, args.net3, args.net4]
 for i in range(len(net)):
@@ -48,13 +51,13 @@ optimizers=[]
 schedulers=[]
 for i in range(num_net):
     if net[i] == 'Resnet_32':
-        models.append(model.ResNet(num_classes).to(DEVICE))
+        models.append(model.ResNet(num_classes,args.use_weight_init).to(DEVICE))
     elif net[i] == 'MobileNet':
         models.append(model.MobileNet.to(DEVICE))
     elif net[i] == 'InceptionV1':
         models.append(model.InceptionV1.to(DEVICE))
     elif net[i] == 'WRN_28_10' :
-        models.append(model.WRN_28_10.to(DEVICE))
+        models.append(model.Wide_ResNet(num_classes,args.use_weight_init).to(DEVICE))
 
 ## optimizer
 for i in range(num_net):
@@ -65,10 +68,12 @@ for i in range(num_net):
     elif args.optim == 'RMSprop':
         optimizers.append(optim.RMSprop(models[i].parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.decay))
     schedulers.append(optim.lr_scheduler.StepLR(optimizers[i], step_size=args.step, gamma=args.gamma))
+
 ## loss
 criterion_CE = nn.CrossEntropyLoss()
 criterion_KLD = nn.KLDivLoss(reduction='batchmean')
-## train
+
+## train_1epoch
 def train_epoch(model, train_loader, optimizers):
     for i in range(num_net):
         model[i].train()
@@ -92,7 +97,6 @@ def train_epoch(model, train_loader, optimizers):
             optimizers[i].zero_grad()
             losses[i].backward()
             optimizers[i].step()
-
 
 ##evaluate
 def evaluate(model, test_loader):
@@ -128,7 +132,7 @@ def evaluate(model, test_loader):
         #test_loss[i] /= len(test_loader.dataset)
         test_accuracy[i] = 100.*correct[i]/len(test_loader.dataset)
     return test_loss,test_accuracy
-##
+## train
 def train():
     for epoch in range(1,args.EPOCHS+1):
         for i in range(num_net):
