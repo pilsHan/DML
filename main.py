@@ -13,11 +13,10 @@ import model
 ## parser
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-parser = argparse.ArgumentParser(description='DML : CIFAR10, CIFAR100')
+parser = argparse.ArgumentParser(description='DML')
 parser.add_argument('--EPOCHS', default=200, type=int)
 parser.add_argument('--BATCH_SIZE', default=64, type=int)
 parser.add_argument('--num_workers', default=2, type=int)
-parser.add_argument('--expansion', default=1, type=int)
 
 parser.add_argument('--lr', default=0.1, type=float)
 parser.add_argument('--momentum', default=0.9, type=float)
