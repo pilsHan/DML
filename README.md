@@ -42,12 +42,12 @@ This repository is the unofficial implementation of :
 |Network Types|Network Types|Ind.|Ind.|DML|DML|DML-Ind.|DML-Ind.|
 |:-----:|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |Net1|Net2|Net1|Net2|Net1|Net2|Net1|Net2|
-|Resnet-32|Resnet-32|71.13|71.13|-||||
+|Resnet-32|Resnet-32|71.13|71.13|72.17|72.55|1.04|1.42|
 |Resnet-32|WRN_28_10|71.13|-|-|-|-|-|
 
 ##### Top-1 accuracy (%) on the CIFAR-100 dataset
 
-*It seems that this implementation doesn't properly yet*    
+~~It seems that this implementation doesn't properly yet~~    
 2021.8.25) I didn't completely separate the graphs of the two networks, And I'm experimenting again with modifications.
 
 ### Usage
