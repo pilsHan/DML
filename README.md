@@ -43,7 +43,7 @@ This repository is the unofficial implementation of :
 |Network Types|Network Types|Ind.|Ind.|DML|DML|DML-Ind.|DML-Ind.|
 |:-----:|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |Net1|Net2|Net1|Net2|Net1|Net2|Net1|Net2|
-|Resnet-32|Resnet-32|71.13|71.13|72.22|72.55|1.09|1.42|
+|Resnet-32|Resnet-32|71.13|71.13|72.40|72.55|1.27|1.42|
 |Resnet-32|WRN_28_10|71.13|-|-|-|-|-|
 
 ##### Top-1 accuracy (%) on the CIFAR-100 dataset
