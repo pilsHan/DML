@@ -93,8 +93,7 @@ def train_epoch(model, train_loader, optimizers):
                 if not l==k:
                     KLD_loss[k]+=criterion_KLD(F.log_softmax(output[k],dim=1),
                                                F.softmax(output[l],dim=1)).item()
-            loss = CE_loss[k]+KLD_loss[k]/(num_net-1)
-            losses.append(loss)
+            losses.append(CE_loss[k]+KLD_loss[k]/(num_net-1))
         for i in range(num_net):
             optimizers[i].zero_grad()
             losses[i].backward()
