@@ -20,7 +20,23 @@ This repository is the unofficial implementation of :
       - The learning rate dropped by 0.1 every 60 epochs (step=60, gamma=0.1)
     - augmentation
       -  horizontal flips
-      -  random crops : padding=4
+      -  random crops : padding=4, padding_mode='reflect'
+
+### Loss
+<img width="743" alt="Deep Mutual Learning (DML) schematic" src="https://user-images.githubusercontent.com/87313780/130558874-4d072008-a703-45d3-8a76-af216dd8195b.png">
+
+<img width="310" alt="스크린샷 2021-08-24 오후 2 08 39" src="https://user-images.githubusercontent.com/87313780/130559283-024df8f1-8cd0-4a33-adcc-4cc0b94665ec.png">
+<img width="351" alt="스크린샷 2021-08-24 오후 2 38 45" src="https://user-images.githubusercontent.com/87313780/130561940-c80e8801-ce39-4bef-91d3-6b0e207b5f63.png">   
+
+     'L1=nn.CrossEntropyLoss(output1,input)'
+     
+<img width="362" alt="스크린샷 2021-08-24 오후 2 04 38" src="https://user-images.githubusercontent.com/87313780/130561004-04010172-f9bd-42b1-a28d-4a950b957038.png">
+<img width="444" alt="스크린샷 2021-08-24 오후 2 03 16" src="https://user-images.githubusercontent.com/87313780/130560907-1653fe53-561d-4d67-952d-78c62dcf8d77.png">
+
+     'D_kd(2||1)=nn.KLDivLoss(F.log_softmax(output1),F.softmax(ouput2))
+'  
+
+
 ### Result
 |Network Types|Network Types|Ind.|Ind.|DML|DML|DML-Ind.|DML-Ind.|
 |:-----:|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|
