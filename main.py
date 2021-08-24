@@ -106,8 +106,8 @@ def evaluate(model, test_loader):
     test_loss = [0]*num_net
     pred = [0]*num_net
     correct = [0]*num_net
-    losses = []
     test_accuracy=[0]*num_net
+    losses = []
     KLD_loss = []
     CE_loss = []
     with torch.no_grad():
