@@ -123,8 +123,7 @@ def evaluate(model, test_loader):
                     if not l == k:
                         KLD_loss[k] += criterion_KLD(F.log_softmax(output[k], dim=1),
                                                      F.softmax(output[l], dim=1)).item()
-                loss = CE_loss[k] + KLD_loss[k] / (num_net - 1)
-                losses.append(loss)
+                losses.append(CE_loss[k] + KLD_loss[k] / (num_net - 1))
             for i in range(num_net):
                 test_loss[i]=losses[i].item()
                 pred[i] = output[i].max(1, keepdim = True)[1]
