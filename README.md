@@ -1,5 +1,6 @@
 # DML_for-personal-study **[proceeding]**
 still unfinished and in progress
+I'll come after implementing IE-KD. see you later
 ## pytorch implementation
 This repository is the unofficial implementation of :   
 [Deep Mutual Learning (Ying Zhang, Tao Xiang, Timothy M. Hospedales, Huchuan Lu)](https://arxiv.org/pdf/1706.00384.pdf)   
