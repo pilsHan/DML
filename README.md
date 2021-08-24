@@ -33,7 +33,7 @@ This repository is the unofficial implementation of :
 <img width="362" alt="스크린샷 2021-08-24 오후 2 04 38" src="https://user-images.githubusercontent.com/87313780/130561004-04010172-f9bd-42b1-a28d-4a950b957038.png">
 <img width="444" alt="스크린샷 2021-08-24 오후 2 03 16" src="https://user-images.githubusercontent.com/87313780/130560907-1653fe53-561d-4d67-952d-78c62dcf8d77.png">
 
-     'D_kd(2||1)=nn.KLDivLoss(F.log_softmax(output1),F.softmax(ouput2))
+     'D_kd(2||1)=nn.KLDivLoss(F.log_softmax(output1),F.softmax(output2))
 '  
 
 
