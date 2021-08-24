@@ -47,7 +47,7 @@ This repository is the unofficial implementation of :
 ##### Top-1 accuracy (%) on the CIFAR-100 dataset
 
 *It seems that this implementation doesn't properly yet*    
-+) I didn't completely separate the graphs of the two networks, And I'm experimenting again with modifications.
+2021.8.25) I didn't completely separate the graphs of the two networks, And I'm experimenting again with modifications.
 
 ### Usage
 1. clone repository `git clone 'https://github.com/pilsHan/DML_for-personal-study.git'`
