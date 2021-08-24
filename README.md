@@ -46,7 +46,7 @@ This repository is the unofficial implementation of :
 
 ##### Top-1 accuracy (%) on the CIFAR-100 dataset
 
-*It seems that this implementation doesn't properly yet*
+*It seems that this implementation doesn't properly yet*    
 +) I haven't completely separated the graphs of the two networks, and I'm experimenting with them again.
 
 ### Usage
