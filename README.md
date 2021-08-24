@@ -8,6 +8,7 @@ This repository is the unofficial implementation of :
 - more student networks (now 2 networks)   
 - implement other model not only Resnet but also MobileNet, InceptionV1, WRN_28_10
 - experimental environment setting and comparison of paper results
+- visualization
 
 ### Experimental setting
 1. CIFAR 100
