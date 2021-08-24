@@ -1,4 +1,3 @@
-<img width="216" alt="스크린샷 2021-08-24 오후 2 48 50" src="https://user-images.githubusercontent.com/87313780/130562960-6adfc35d-bcf7-4cff-8861-d6baec361b34.png">
 # DML_for-personal-study **[proceeding]**
 still unfinished and in progress
 ## pytorch implementation
