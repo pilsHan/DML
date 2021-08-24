@@ -1,4 +1,4 @@
-## import
+## module
 import argparse
 from tqdm import tqdm
 
@@ -13,7 +13,7 @@ import model
 ## parser
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-parser = argparse.ArgumentParser(description='DML')
+parser = argparse.ArgumentParser(description='DML : CIFAR10, CIFAR100')
 parser.add_argument('--EPOCHS', default=200, type=int)
 parser.add_argument('--BATCH_SIZE', default=64, type=int)
 parser.add_argument('--num_workers', default=2, type=int)
@@ -36,6 +36,17 @@ parser.add_argument('--download', default=True, type=bool)
 parser.add_argument('--use_weight_init', default=True, type=bool)
 
 args = parser.parse_args()
+
+##seed
+def seed_everything(seed=2021):
+    #random.seed(seed)
+    #os.environ['PYTHONHASHSEED'] = str(seed)
+    #np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+seed_everything()
 
 ## dataload
 train_loader,test_loader, num_classes = dataloader(args)
@@ -73,10 +84,14 @@ for i in range(num_net):
 criterion_CE = nn.CrossEntropyLoss()
 criterion_KLD = nn.KLDivLoss(reduction='batchmean')
 
-## train_1epoch
+## train
 def train_epoch(model, train_loader, optimizers):
     for i in range(num_net):
         model[i].train()
+    train_loss = [0]*num_net
+    pred = [0]*num_net
+    correct = [0]*num_net
+    train_accuracy=[0]*num_net
     for batch_idx, (image, label) in enumerate(tqdm(train_loader)):
         image, label = image.to(DEVICE), label.to(DEVICE)
         output=[]
@@ -89,14 +104,20 @@ def train_epoch(model, train_loader, optimizers):
             CE_loss.append(criterion_CE(output[k],label))
             KLD_loss.append(0)
             for l in range(num_net):
-                if not l==k:
-                    KLD_loss[k]+=criterion_KLD(F.log_softmax(output[k],dim=1),
-                                               F.softmax(output[l],dim=1)).item()
+                if l!=k:
+                    KLD_loss[k]+=criterion_KLD(F.log_softmax(output[k],dim=1),F.softmax(output[l],dim=1).detach())
             losses.append(CE_loss[k]+KLD_loss[k]/(num_net-1))
+        for i in range(num_net):
+            train_loss[i]=losses[i].item()
+            pred[i] = output[i].max(1, keepdim = True)[1]
+            correct[i] += pred[i].eq(label.view_as(pred[i])).sum().item()
         for i in range(num_net):
             optimizers[i].zero_grad()
             losses[i].backward()
             optimizers[i].step()
+    for i in range(num_net):
+        train_accuracy[i] = 100.*correct[i]/len(train_loader.dataset)
+    return train_loss,train_accuracy
 
 ##evaluate
 def evaluate(model, test_loader):
@@ -119,7 +140,7 @@ def evaluate(model, test_loader):
                 CE_loss.append(criterion_CE(output[k], label))
                 KLD_loss.append(0)
                 for l in range(num_net):
-                    if not l == k:
+                    if l!=k:
                         KLD_loss[k] += criterion_KLD(F.log_softmax(output[k], dim=1),
                                                      F.softmax(output[l], dim=1)).item()
                 losses.append(CE_loss[k] + KLD_loss[k] / (num_net - 1))
@@ -131,6 +152,7 @@ def evaluate(model, test_loader):
         #test_loss[i] /= len(test_loader.dataset)
         test_accuracy[i] = 100.*correct[i]/len(test_loader.dataset)
     return test_loss,test_accuracy
+
 ## train
 for epoch in range(1,args.EPOCHS+1):
     for i in range(num_net):
