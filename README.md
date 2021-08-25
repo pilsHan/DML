@@ -1,6 +1,4 @@
 # DML
-I'll come after implementing IE-KD. see you later
-## pytorch implementation
 This repository is the unofficial implementation of :   
 [Deep Mutual Learning (Ying Zhang, Tao Xiang, Timothy M. Hospedales, Huchuan Lu)](https://arxiv.org/pdf/1706.00384.pdf)   
 
@@ -8,7 +6,7 @@ This repository is the unofficial implementation of :
 - more student networks (now 2 networks)   
 - implement other model not only Resnet_32,WRN_28_10
 - experimental environment setting and comparison of paper results
-- visualization
+- visualization  
 
 ### Experimental setting
 1. CIFAR 100
