@@ -1,5 +1,4 @@
-# DML_for-personal-study **[proceeding]**
-still unfinished and in progress    
+# DML
 I'll come after implementing IE-KD. see you later
 ## pytorch implementation
 This repository is the unofficial implementation of :   
@@ -7,7 +6,7 @@ This repository is the unofficial implementation of :
 
 ### To do
 - more student networks (now 2 networks)   
-- implement other model not only Resnet but also MobileNet, InceptionV1, WRN_28_10
+- implement other model not only Resnet_32,WRN_28_10
 - experimental environment setting and comparison of paper results
 - visualization
 
