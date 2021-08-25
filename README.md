@@ -1,4 +1,4 @@
-# DML
+# DML_pytorch
 This repository is the unofficial implementation of :   
 [Deep Mutual Learning (Ying Zhang, Tao Xiang, Timothy M. Hospedales, Huchuan Lu)](https://arxiv.org/pdf/1706.00384.pdf)   
 
