@@ -49,7 +49,7 @@ This repository is the unofficial implementation of :
 2021.8.25) I didn't completely separate the graphs of the two networks, And I'm experimenting again with modifications.
 
 ### Usage
-1. clone repository `git clone 'https://github.com/pilsHan/DML_for-personal-study.git'`
+1. clone repository `git clone 'https://github.com/pilsHan/DML.git'`
 2. requirements : pytorch and torchvision (can be run with colab)
 3. run main.py `python main.py --num_workers 2`
 
